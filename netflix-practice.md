@@ -6,145 +6,148 @@
 
 ```sql
 -- Create Nodes
-CREATE (artist:Director{name: "Chris Columbus"})
-CREATE (artist:Director{name: "Martin Scorsese"})
-CREATE (artist:Director{name: "Edgar Wright"})
-CREATE (artist:Director{name: "Steven Spielberg"})
+CREATE (artist:Director{name: "Chris Columbus"});
+CREATE (artist:Director{name: "Martin Scorsese"});
+CREATE (artist:Director{name: "Edgar Wright"});
+CREATE (artist:Director{name: "Steven Spielberg"});
 
-CREATE (artist:Writer{name: "John Hughes"}) RETURN artist;
+CREATE (artist:Writer{name: "John Hughes"});
 
-CREATE (artist:Performer{name: "Joe Pesci"}) RETURN artist;
-CREATE (artist:Performer{name: "Daniel Stern"}) RETURN artist;
-CREATE (artist:Performer{name: "Macaulay Culkin"}) RETURN artist;
-CREATE (artist:Performer{name: "Catherine OHara"}) RETURN artist;
+CREATE (artist:Performer{name: "Joe Pesci"});
+CREATE (artist:Performer{name: "Daniel Stern"});
+CREATE (artist:Performer{name: "Macaulay Culkin"});
+CREATE (artist:Performer{name: "Catherine OHara"});
 
 
-CREATE (artist:Nationality{country: "USA"}) RETURN artist;
-CREATE (artist:Nationality{country: "Canada"}) RETURN artist;
-CREATE (artist:Nationality{country: "UK"}) RETURN artist;
+CREATE (artist:Nationality{country: "USA"});
+CREATE (artist:Nationality{country: "Canada"});
+CREATE (artist:Nationality{country: "UK"});
 
-CREATE (artist:Gender{name: "Male"}) RETURN artist;
-CREATE (artist:Gender{name: "Female"}) RETURN artist;
-CREATE (artist:Gender{name: "Non-Binary"}) RETURN artist;
+CREATE (artist:Gender{name: "Male"});
+CREATE (artist:Gender{name: "Female"});
+CREATE (artist:Gender{name: "Non-Binary"});
 ```
 
 ```sql
 --Directed
 MATCH (artist:Director {name: "Chris Columbus"})
 MATCH (m:Movie {title:"Home Alone"})
-CREATE (artist)-[rel:DIRECTED]->(m)
-
+CREATE (artist)-[rel:DIRECTED]->(m);
 
 MATCH (artist:Director {name: "Chris Columbus"})
 MATCH (m:Movie {title:"Home Alone 2: Lost in New York"})
-CREATE (artist)-[rel:DIRECTED]->(m)
+CREATE (artist)-[rel:DIRECTED]->(m);
+
+MATCH (artist:Director {name: "Chris Columbus"})
+MATCH (m:Movie {title:"Mrs. Doubtfire"})
+CREATE (artist)-[rel:DIRECTED]->(m);
 
 MATCH (artist:Director {name: 'Martin Scorsese'})
 MATCH (m:Movie {title:"Taxi Driver", year: 1976})
-CREATE (artist)-[rel:DIRECTED]->(m)
+CREATE (artist)-[rel:DIRECTED]->(m);
 
 --Wrote
-MATCH (artist:Director {name: "John Hughes"})
+MATCH (artist:Writer {name: "John Hughes"})
 MATCH (m:Movie {title:"Home Alone"})
-CREATE (artist)-[rel:Wrote]->(m)
+CREATE (artist)-[rel:WROTE]->(m);
 
-MATCH (artist:Director {name: "John Hughes"})
+MATCH (artist:Writer {name: "John Hughes"})
 MATCH (m:Movie {title:"Home Alone 2: Lost in New York"})
-CREATE (artist)-[rel:Wrote]->(m)
+CREATE (artist)-[rel:WROTE]->(m);
 
 --Performed_In
 --Can get away without specifying performers because all performers are in home alone 1 and 2
 MATCH (artist:Performer)
 MATCH (m:Movie {title:"Home Alone"})
-CREATE (artist)-[rel:PERFORMS_IN]->(m)
+CREATE (artist)-[rel:PERFORMS_IN]->(m);
 
 MATCH (artist:Performer)
 MATCH (m:Movie {title:"Home Alone 2: Lost in New York"})
-CREATE (artist)-[rel:PERFORMS_IN]->(m)
+CREATE (artist)-[rel:PERFORMS_IN]->(m);
 
 --Identifies
 
 MATCH (artist:Performer {name: 'Chris Columbus'})
 MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'Edgar Wright'})
 MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'Steven Spielberg'})
 MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'John Hughes'})
 MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'Joe Pesci'})
 MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'Daniel Stern'})
 MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'Chris Columbus'})
 MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'Macaulay Culkin'})
 MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'Martin Scorsese'})
 MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'Catherine OHara'})
 MATCH (g:Gender {name: "Female"})
-CREATE (artist)-[rel:IDENTIFIES]->(g)
+CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 -- Is_From
 
 MATCH (artist:Performer {name: 'Chris Columbus'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 
 MATCH (artist:Performer {name: 'Edgar Wright'})
 MATCH (n:Nationality {country: "UK"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 
 MATCH (artist:Performer {name: 'Steven Spielberg'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 
 MATCH (artist:Performer {name: 'John Hughes'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 
 MATCH (artist:Performer {name: 'Joe Pesci'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 
 MATCH (artist:Performer {name: 'Daniel Stern'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 
 MATCH (artist:Performer {name: 'Chris Columbus'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 
 MATCH (artist:Performer {name: 'Macaulay Culkin'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 
 MATCH (artist:Performer {name: 'Martin Scorsese'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 
 MATCH (artist:Performer {name: 'Catherine OHara'})
 MATCH (n:Nationality {country: "Canada"})
-CREATE (artist)-[rel:IDENTIFIES]->(n)
+CREATE (artist)-[rel:IDENTIFIES]->(n);
 ```
 
 ```sql
