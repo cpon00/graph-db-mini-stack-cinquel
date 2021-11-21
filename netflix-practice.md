@@ -67,19 +67,19 @@ CREATE (artist)-[rel:PERFORMS_IN]->(m);
 
 --Identifies
 
-MATCH (artist:Performer {name: 'Chris Columbus'})
+MATCH (artist:Director {name: 'Chris Columbus'})
 MATCH (g:Gender {name: "Male"})
 CREATE (artist)-[rel:IDENTIFIES]->(g);
 
-MATCH (artist:Performer {name: 'Edgar Wright'})
+MATCH (artist:Director {name: 'Edgar Wright'})
 MATCH (g:Gender {name: "Male"})
 CREATE (artist)-[rel:IDENTIFIES]->(g);
 
-MATCH (artist:Performer {name: 'Steven Spielberg'})
+MATCH (artist:Director {name: 'Steven Spielberg'})
 MATCH (g:Gender {name: "Male"})
 CREATE (artist)-[rel:IDENTIFIES]->(g);
 
-MATCH (artist:Performer {name: 'John Hughes'})
+MATCH (artist:Writer {name: 'John Hughes'})
 MATCH (g:Gender {name: "Male"})
 CREATE (artist)-[rel:IDENTIFIES]->(g);
 
@@ -91,15 +91,11 @@ MATCH (artist:Performer {name: 'Daniel Stern'})
 MATCH (g:Gender {name: "Male"})
 CREATE (artist)-[rel:IDENTIFIES]->(g);
 
-MATCH (artist:Performer {name: 'Chris Columbus'})
-MATCH (g:Gender {name: "Male"})
-CREATE (artist)-[rel:IDENTIFIES]->(g);
-
 MATCH (artist:Performer {name: 'Macaulay Culkin'})
 MATCH (g:Gender {name: "Male"})
 CREATE (artist)-[rel:IDENTIFIES]->(g);
 
-MATCH (artist:Performer {name: 'Martin Scorsese'})
+MATCH (artist:Director {name: 'Martin Scorsese'})
 MATCH (g:Gender {name: "Male"})
 CREATE (artist)-[rel:IDENTIFIES]->(g);
 
@@ -109,19 +105,19 @@ CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 -- Is_From
 
-MATCH (artist:Performer {name: 'Chris Columbus'})
+MATCH (artist:Director {name: 'Chris Columbus'})
 MATCH (n:Nationality {country: "USA"})
 CREATE (artist)-[rel:IS_FROM]->(n);
 
-MATCH (artist:Performer {name: 'Edgar Wright'})
+MATCH (artist:Director {name: 'Edgar Wright'})
 MATCH (n:Nationality {country: "UK"})
 CREATE (artist)-[rel:IS_FROM]->(n);
 
-MATCH (artist:Performer {name: 'Steven Spielberg'})
+MATCH (artist:Director {name: 'Steven Spielberg'})
 MATCH (n:Nationality {country: "USA"})
 CREATE (artist)-[rel:IS_FROM]->(n);
 
-MATCH (artist:Performer {name: 'John Hughes'})
+MATCH (artist:Writer {name: 'John Hughes'})
 MATCH (n:Nationality {country: "USA"})
 CREATE (artist)-[rel:IS_FROM]->(n);
 
@@ -133,15 +129,11 @@ MATCH (artist:Performer {name: 'Daniel Stern'})
 MATCH (n:Nationality {country: "USA"})
 CREATE (artist)-[rel:IS_FROM]->(n);
 
-MATCH (artist:Performer {name: 'Chris Columbus'})
-MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IS_FROM]->(n);
-
 MATCH (artist:Performer {name: 'Macaulay Culkin'})
 MATCH (n:Nationality {country: "USA"})
 CREATE (artist)-[rel:IS_FROM]->(n);
 
-MATCH (artist:Performer {name: 'Martin Scorsese'})
+MATCH (artist:Director {name: 'Martin Scorsese'})
 MATCH (n:Nationality {country: "USA"})
 CREATE (artist)-[rel:IS_FROM]->(n);
 
@@ -213,4 +205,4 @@ RETURN m,v,r,d,rel
 
 <center><img src="./assets/q5.png" style="width: 90%" ></img></center>
 
-> Returns a graph of movies in the datasetdirected by Chris Columbus with all the viewers who rated the movies on the same day.
+> Returns a graph of movies in the dataset directed by Chris Columbus with all the viewers who rated the movies on the same day.
