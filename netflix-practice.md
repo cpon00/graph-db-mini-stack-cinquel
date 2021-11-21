@@ -111,43 +111,43 @@ CREATE (artist)-[rel:IDENTIFIES]->(g);
 
 MATCH (artist:Performer {name: 'Chris Columbus'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 
 MATCH (artist:Performer {name: 'Edgar Wright'})
 MATCH (n:Nationality {country: "UK"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 
 MATCH (artist:Performer {name: 'Steven Spielberg'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 
 MATCH (artist:Performer {name: 'John Hughes'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 
 MATCH (artist:Performer {name: 'Joe Pesci'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 
 MATCH (artist:Performer {name: 'Daniel Stern'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 
 MATCH (artist:Performer {name: 'Chris Columbus'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 
 MATCH (artist:Performer {name: 'Macaulay Culkin'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 
 MATCH (artist:Performer {name: 'Martin Scorsese'})
 MATCH (n:Nationality {country: "USA"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 
 MATCH (artist:Performer {name: 'Catherine OHara'})
 MATCH (n:Nationality {country: "Canada"})
-CREATE (artist)-[rel:IDENTIFIES]->(n);
+CREATE (artist)-[rel:IS_FROM]->(n);
 ```
 
 ```sql
