@@ -14,7 +14,7 @@ KEYWORDS = 'keywords.csv'
 CAST = 'cast.csv'
 CREW = 'crew.csv'
 # Writes into destination
-MOVIES = open(MOVIES, 'w')
+MOVIES = open(MOVIES, 'w+')
 
 # to connect to database
 # db_user = os.environ['DB_USER'] if os.environ.get('DB_USER') else 'neo4j'
@@ -46,7 +46,7 @@ MOVIES = open(MOVIES, 'w')
 #     print(f'INSERT INTO keyword VALUES({key}, \'{value}\');'
 #           )
 
-MOVIES.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT')
+MOVIES.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT\n')
 
 with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m:
     movie_list = list(csv.DictReader(m))
@@ -56,10 +56,9 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m:
         result['title'] = movie['title']
         # There were singular movies in our dataset that had bad values. As such, rather than simply removing them, we gave them an arbitrary date.
         if movie['release_date'] == '':
-            result['release_date'] = date.fromisoformat('3000-1-1')
+            result['release_date'] = date.fromisoformat("1000-01-01")
         else:
-            result['release_date'] = date.fromisoformat(
-                movie['release_date'])
+            result['release_date'] = date.fromisoformat(movie['release_date'])
         result['original_language'] = movie['original_language']
         result['budget'] = int(movie['budget'])
 
