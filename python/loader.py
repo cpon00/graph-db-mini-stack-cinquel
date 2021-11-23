@@ -49,10 +49,10 @@ processed_keywords.write(f'keywordID:ID(Keyword)\n')
 processed_keyword_relations.write(f':START_ID(Movie)|:END_ID(Keyword)|:TYPE\n')
 
 processed_cast.write(f'castID:ID(Cast)\n')
-processed_cast_relations.write(f'::END_ID(Cast)|START_ID(Movie)|:TYPE\n')
+processed_cast_relations.write(f':START_ID(Cast)|:END_ID(Movie)|:TYPE\n')
 
 processed_crew.write(f'crewID:ID(Crew)\n')
-processed_crew_relations.write(f':END_ID(Crew)|:START_ID(Movie)|:TYPE\n')
+processed_crew_relations.write(f':START_ID(Crew)|:END_ID(Movie)|:TYPE\n')
 
 # Opening and reading files:
 with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', encoding='UTF-8') as c:
