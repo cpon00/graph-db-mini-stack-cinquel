@@ -13,9 +13,15 @@ GENRES = 'genres.csv'
 KEYWORDS = 'keywords.csv'
 CAST = 'cast.csv'
 CREW = 'crew.csv'
-# Writes into destination
-MOVIES = open(MOVIES, 'w+')
 
+GENRE_RELATIONS = 'genre_relations.csv'
+# Writes into destination
+processed_movies = open(MOVIES, 'w+')
+processed_genres = open(GENRES, 'w+')
+processed_keywords = open(KEYWORDS, 'w+')
+processed_cast = open(CAST, 'w+')
+processed_crew = open (CREW, "w+")
+processed_genre_relations = open(GENRE_RELATIONS, 'w+')
 # to connect to database
 # db_user = os.environ['DB_USER'] if os.environ.get('DB_USER') else 'neo4j'
 
@@ -46,11 +52,15 @@ MOVIES = open(MOVIES, 'w+')
 #     print(f'INSERT INTO keyword VALUES({key}, \'{value}\');'
 #           )
 
-MOVIES.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT\n')
+genre_dict = {}
+kw_dict = {}
+processed_movies.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT --delimiter "|"\n')
+processed_genres.write(f'genreID:ID|genre --delimiter "|"\n')
+processed_genre_relations.write(f':START_ID(genre)|:END_ID(Movie)|:TYPE --delimiter "|"\n')
 
-with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m:
-    movie_list = list(csv.DictReader(m))
-    for movie in movie_list:
+with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', encoding='UTF-8') as c:
+    movie_list, credit_list = list(csv.DictReader(m)), list(csv.DictReader(c))
+    for movie, credit in zip(movie_list, credit_list):
         result = {}
         result['id'] = int(movie['id'])
         result['title'] = movie['title']
@@ -62,6 +72,10 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m:
         result['original_language'] = movie['original_language']
         result['budget'] = int(movie['budget'])
 
+        for entry in json.loads(movie['genres']): 
+            genre_dict[entry['id']] = entry['name']
+            processed_genre_relations.write(f"{entry['name']}|{result['id']}|CLASSIFIED_AS\n")
+        #for entry in json.loads(movie['keywords']): processed_keywords.write(f"{result['id']}|{entry['name']}\n")
         # result['genre'] = json.loads(movie['genres'])
         # result['keywords'] = json.loads(movie['keywords'])
         # result['overview'] = movie['overview']
@@ -79,14 +93,21 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m:
         # result['crew'] = json.loads(credit['crew'])
         
         # POPULATION STATEMENTS
-        MOVIES.write(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
+        processed_movies.write(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
                                   f"{result['budget']}|{result['popularity']}|{result['vote_average']}|{result['runtime']}\n")
         
         # DEBUGGING STATEMENTS
         # print(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
         #                           f"{result['budget']}|{result['popularity']}|{result['vote_average']}|{result['runtime']}\n")
 
-MOVIES.close()
+for key in genre_dict:
+    processed_genres.write(f"{key}|{genre_dict[key]}\n")
+
+processed_movies.close()
+processed_keywords.close()
+processed_genres.close()
+processed_crew.close()
+processed_cast.close()
 
 # Print statement for ID of inserted entry.
 # print(x.inserted_id)
