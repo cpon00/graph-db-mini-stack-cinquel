@@ -55,7 +55,7 @@ processed_genre_relations = open(GENRE_RELATIONS, 'w+')
 genre_dict = {}
 kw_dict = {}
 processed_movies.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT --delimiter "|"\n')
-processed_genres.write(f'genreID:ID|genre --delimiter "|"\n')
+processed_genres.write(f'genreID:ID(Genre)|genre --delimiter "|"\n')
 processed_genre_relations.write(f':START_ID(genre)|:END_ID(Movie)|:TYPE --delimiter "|"\n')
 
 with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', encoding='UTF-8') as c:
