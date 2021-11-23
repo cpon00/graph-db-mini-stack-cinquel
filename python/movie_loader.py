@@ -46,7 +46,7 @@ MOVIES = open(MOVIES, 'w')
 #     print(f'INSERT INTO keyword VALUES({key}, \'{value}\');'
 #           )
 
-MOVIES.write('movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT')
+MOVIES.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT')
 
 with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m:
     movie_list = list(csv.DictReader(m))
