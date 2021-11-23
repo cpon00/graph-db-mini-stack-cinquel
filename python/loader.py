@@ -48,7 +48,7 @@ processed_genre_relations.write(f':START_ID(Movie)|:END_ID(Genre)|:TYPE\n')
 processed_keywords.write(f'keywordID:ID(Keyword)\n')
 processed_keyword_relations.write(f':START_ID(Movie)|:END_ID(Keyword)|:TYPE\n')
 
-processed_cast.write(f'castID:ID(Actor)\n')
+processed_cast.write(f'castID:ID(Cast)\n')
 processed_cast_relations.write(f'::END_ID(Cast)|START_ID(Movie)|:TYPE\n')
 
 processed_crew.write(f'crewID:ID(Crew)\n')
