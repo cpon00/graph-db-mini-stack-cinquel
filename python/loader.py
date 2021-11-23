@@ -81,13 +81,13 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
             keywords.add(entry['name'])
             processed_keyword_relations.write(f"{result['id']}|{entry['name']}|HAS_KEYWORD\n")
         for entry in json.loads(credit['cast']):
-            character = entry['character'].replace('"', "'")
-            name = entry['name'].replace('"', "'")
+            character = entry['character'].replace('"', "'").replace('|', '/')
+            name = entry['name'].replace('"', "'").replace('|', '/')
             processed_cast.write(f"{name}|{character}\n")
             processed_cast_relations.write(f"{result['id']}|{name}|PERFORMED IN\n")
         for entry in json.loads(credit['crew']):
-            job = entry['job'].replace('"', "'")
-            name = entry['name'].replace('"', "'")
+            job = entry['job'].replace('"', "'").replace('|', '/')
+            name = entry['name'].replace('"', "'").replace('|', '/')
             processed_crew.write(f"{name}|{job}\n")
             processed_crew_relations.write(f"{result['id']}|{name}|WORKED ON\n")
         
