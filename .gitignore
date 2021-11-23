@@ -1,5 +1,13 @@
 tmdb_5000_credits.csv
 tmdb_5000_movies.csv
+cast_relations.csv
+cast.csv
+crew_relations.csv
+crew.csv
+genre_relations.csv
+genres.csv
+keword_relations.csv
+keywords.csv
 
 combined_data_*.txt
 movie_titles.csv
