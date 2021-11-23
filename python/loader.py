@@ -34,6 +34,8 @@ processed_crew_relations = open(CREW_RELATIONS, 'w+')
 # These data structures will represent the non-unique genres and keywords. As such, they are contained in a set.
 genres = set()
 keywords = set()
+cast = set()
+crew = set()
 
 # To avoid the issue of commas, we simply specified the delimiter '|' in the import command.
 
@@ -46,10 +48,10 @@ processed_genre_relations.write(f':START_ID(Movie)|:END_ID(Genre)|:TYPE\n')
 processed_keywords.write(f'keywordID:ID(Keyword)\n')
 processed_keyword_relations.write(f':START_ID(Movie)|:END_ID(Keyword)|:TYPE\n')
 
-processed_cast.write(f'castID:ID(Actor)|role:STRING\n')
+processed_cast.write(f'castID:ID(Actor)\n')
 processed_cast_relations.write(f':START_ID(Movie)|:END_ID|:TYPE\n')
 
-processed_crew.write(f'crewID:ID(Crew)|job:STRING\n')
+processed_crew.write(f'crewID:ID(Crew)\n')
 processed_crew_relations.write(f':START_ID(Movie)|:END_ID|:TYPE\n')
 
 # Opening and reading files:
@@ -83,20 +85,15 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
             keywords.add(entry['name'])
             processed_keyword_relations.write(f"{result['id']}|{entry['name']}|HAS_KEYWORD\n")
         
-        cast = json.loads(credit['cast'])    
-        end = 2 if len(cast) >= 3 else len(cast)
-        for x in range(0, end):
-            character = cast[x]['character'].replace('"', "'").replace('|', '/')
-            name = cast[x]['name'].replace('"', "'").replace('|', '/')
-            processed_cast.write(f"{name}|{character}\n")
+        for entry in json.loads(credit['cast']):
+            name = entry['name'].replace('"', "'").replace('|', '/')
+            cast.add(name)
             processed_cast_relations.write(f"{result['id']}|{name}|PERFORMED IN\n")
             
-        crew = json.loads(credit['crew'])
-        end = 2 if len(crew) >= 3 else len(crew)    
-        for x in range(0, end):
-            job = crew[x]['job'].replace('"', "'").replace('|', '/')
-            name = crew[x]['name'].replace('"', "'").replace('|', '/')
-            processed_crew.write(f"{name}|{job}\n")
+            
+        for entry in json.loads(credit['crew']):
+            name = entry['name'].replace('"', "'").replace('|', '/')
+            crew.add(name)
             processed_crew_relations.write(f"{result['id']}|{name}|WORKED ON\n")
         
         # Final write statement for movies.
@@ -109,6 +106,12 @@ for key in genres:
 
 for key in keywords:
     processed_keywords.write(f"{key}\n")
+    
+for key in cast:
+    processed_cast.write(f"{key}\n")
+    
+for key in crew:
+    processed_crew.write(f"{key}\n")
 
 processed_movies.close()
 processed_keywords.close()
