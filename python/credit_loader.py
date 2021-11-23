@@ -3,6 +3,7 @@ import csv
 import json
 import os
 import sys
+# from neo4j import GraphDatabase
 
 # For simplicity, we assume that the program runs where the files are located.
 MOVIE_SOURCE = 'tmdb_5000_movies.csv'
@@ -26,27 +27,6 @@ MOVIES = open(MOVIES, 'w')
 
 # We have two files to load, but only some of the files in the credits are relevant.
 # So we open both and use only the cast and crew portion of credits.
-
-# genre_dict = {}
-# for genres in movies.genres:
-#     for item in genres:
-#         genre_id = item['id']
-#         genre_name = item['name']
-#         genre_dict[genre_id] = genre_name
-        
-# kw_dict = {}
-# for (id, keywords) in zip(movies.id, movies.keywords):
-#     for kw in keywords:
-#         kw_id = kw['id']
-#         kw_name = kw['name']
-#         kw_dict[kw_id] = kw_name
-
-# for (key, value) in kw_dict.items():
-#     value = value.replace("'", "''")
-#     print(f'INSERT INTO keyword VALUES({key}, \'{value}\');'
-#           )
-
-MOVIES.write('movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT')
 
 with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m:
     movie_list = list(csv.DictReader(m))
@@ -78,14 +58,8 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m:
 
         # result['cast'] = json.loads(credit['cast'])
         # result['crew'] = json.loads(credit['crew'])
-        
-        # POPULATION STATEMENTS
         MOVIES.write(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
                                   f"{result['budget']}|{result['popularity']}|{result['vote_average']}|{result['runtime']}\n")
-        
-        # DEBUGGING STATEMENTS
-        # print(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
-        #                           f"{result['budget']}|{result['popularity']}|{result['vote_average']}|{result['runtime']}\n")
 
 MOVIES.close()
 
