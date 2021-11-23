@@ -15,6 +15,7 @@ CAST = 'cast.csv'
 CREW = 'crew.csv'
 
 GENRE_RELATIONS = 'genre_relations.csv'
+KEYWORD_RELATIONS = 'keyword_relations.csv'
 # Writes into destination
 processed_movies = open(MOVIES, 'w+')
 processed_genres = open(GENRES, 'w+')
@@ -22,6 +23,9 @@ processed_keywords = open(KEYWORDS, 'w+')
 processed_cast = open(CAST, 'w+')
 processed_crew = open (CREW, "w+")
 processed_genre_relations = open(GENRE_RELATIONS, 'w+')
+processed_keyword_relations = open(KEYWORD_RELATIONS, 'w+')
+processed_cast_relations = open(GENRE_RELATIONS, 'w+')
+processed_crew_relations = open(GENRE_RELATIONS, 'w+')
 # to connect to database
 # db_user = os.environ['DB_USER'] if os.environ.get('DB_USER') else 'neo4j'
 
@@ -51,13 +55,24 @@ processed_genre_relations = open(GENRE_RELATIONS, 'w+')
 #     value = value.replace("'", "''")
 #     print(f'INSERT INTO keyword VALUES({key}, \'{value}\');'
 #           )
-
-genre_dict = {}
 genres = set()
-kw_dict = {}
+keywords = set()
+cast = set()
+crew = set()
 processed_movies.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT\n')
+
 processed_genres.write(f'genreID:ID(Genre)\n')
 processed_genre_relations.write(f':START_ID(Movie)|:END_ID(Genre)|:TYPE\n')
+
+processed_keywords.write(f'keywordID:ID(Keyword)\n')
+processed_keyword_relations.write(f':START_ID(Movie)|:END_ID(Keyword)|:TYPE\n')
+
+processed_cast.write(f'castID:ID(Actor)|role:STRING\n')
+processed_cast_relations.write(f':START_ID(Movie)|:END_ID(Actor)|:TYPE\n')
+
+processed_crew.write(f'crewID:ID(Crew)|job:STRING\n')
+processed_crew_relations.write(f':START_ID(Movie)|:END_ID(Crew)|:TYPE\n')
+
 
 with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', encoding='UTF-8') as c:
     movie_list, credit_list = list(csv.DictReader(m)), list(csv.DictReader(c))
@@ -76,7 +91,9 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
         for entry in json.loads(movie['genres']): 
             genres.add(entry['name'])
             processed_genre_relations.write(f"{result['id']}|{entry['name']}|CLASSIFIED_AS\n")
-        #for entry in json.loads(movie['keywords']): processed_keywords.write(f"{result['id']}|{entry['name']}\n")
+        for entry in json.loads(movie['keywords']): 
+            keywords.add(entry['name'])
+            processed_keyword_relations.write(f"{result['id']}|{entry['name']}|HAS_KEYWORD\n")
         # result['genre'] = json.loads(movie['genres'])
         # result['keywords'] = json.loads(movie['keywords'])
         # result['overview'] = movie['overview']
@@ -90,8 +107,13 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
         else:
             result['runtime'] = int(float(movie['runtime']))
 
-        # result['cast'] = json.loads(credit['cast'])
-        # result['crew'] = json.loads(credit['crew'])
+        for entry in json.loads(credit['cast']):
+            processed_cast.write(f"{entry['name']}|{entry['character']}\n")
+            processed_cast_relations.write(f"{result['id']}|{entry['name']}|PERFORMED IN\n")
+            
+        for entry in json.loads(credit['crew']):
+            processed_crew.write(f"{entry['name']}|{entry['job']}\n")
+            processed_crew_relations.write(f"{result['id']}|{entry['name']}|WORKED ON\n")
         
         # POPULATION STATEMENTS
         processed_movies.write(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
@@ -103,6 +125,9 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
 
 for key in genres:
     processed_genres.write(f"{key}\n")
+
+for key in keywords:
+    processed_keywords.write(f"{key}\n")
 
 processed_movies.close()
 processed_keywords.close()
