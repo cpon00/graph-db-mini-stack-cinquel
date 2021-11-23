@@ -7,11 +7,11 @@ MOVIE_SOURCE = 'tmdb_5000_movies.csv'
 CREDIT_SOURCE = 'tmdb_5000_credits.csv'
 
 # CSVs to represent nodes.
-MOVIES = 'movies.csv'
-GENRES = 'genres.csv'
-KEYWORDS = 'keywords.csv'
-CAST = 'cast.csv'
-CREW = 'crew.csv'
+MOVIES = 'movie_nodes.csv'
+GENRES = 'genre_nodes.csv'
+KEYWORDS = 'keyword_nodes.csv'
+CAST = 'cast_nodes.csv'
+CREW = 'crew_nodes.csv'
 
 # CSVs to represent node relationships.
 GENRE_RELATIONS = 'genre_relations.csv'
