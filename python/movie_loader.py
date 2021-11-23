@@ -53,10 +53,11 @@ processed_genre_relations = open(GENRE_RELATIONS, 'w+')
 #           )
 
 genre_dict = {}
+genres = set()
 kw_dict = {}
-processed_movies.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT --delimiter "|"\n')
-processed_genres.write(f'genreID:ID(Genre)|genre --delimiter "|"\n')
-processed_genre_relations.write(f':START_ID(genre)|:END_ID(Movie)|:TYPE --delimiter "|"\n')
+processed_movies.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT\n')
+processed_genres.write(f'genreID:ID(Genre)\n')
+processed_genre_relations.write(f':START_ID(Movie)|:END_ID(Genre)|:TYPE\n')
 
 with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', encoding='UTF-8') as c:
     movie_list, credit_list = list(csv.DictReader(m)), list(csv.DictReader(c))
@@ -73,8 +74,8 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
         result['budget'] = int(movie['budget'])
 
         for entry in json.loads(movie['genres']): 
-            genre_dict[entry['id']] = entry['name']
-            processed_genre_relations.write(f"{entry['name']}|{result['id']}|CLASSIFIED_AS\n")
+            genres.add(entry['name'])
+            processed_genre_relations.write(f"{result['id']}|{entry['name']}|CLASSIFIED_AS\n")
         #for entry in json.loads(movie['keywords']): processed_keywords.write(f"{result['id']}|{entry['name']}\n")
         # result['genre'] = json.loads(movie['genres'])
         # result['keywords'] = json.loads(movie['keywords'])
@@ -100,8 +101,8 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
         # print(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
         #                           f"{result['budget']}|{result['popularity']}|{result['vote_average']}|{result['runtime']}\n")
 
-for key in genre_dict:
-    processed_genres.write(f"{key}|{genre_dict[key]}\n")
+for key in genres:
+    processed_genres.write(f"{key}\n")
 
 processed_movies.close()
 processed_keywords.close()
