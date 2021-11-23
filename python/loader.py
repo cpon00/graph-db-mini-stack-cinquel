@@ -82,6 +82,7 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
             processed_keyword_relations.write(f"{result['id']}|{entry['name']}|HAS_KEYWORD\n")
         for entry in json.loads(credit['cast']):
             character = entry['character'].replace('"', "'")
+            name = entry['name'].replace('"', "'")
             processed_cast.write(f"{entry['name']}|{character}\n")
             processed_cast_relations.write(f"{result['id']}|{entry['name']}|PERFORMED IN\n")
         for entry in json.loads(credit['crew']):
