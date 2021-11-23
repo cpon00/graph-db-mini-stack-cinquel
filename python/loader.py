@@ -7,17 +7,17 @@ MOVIE_SOURCE = 'tmdb_5000_movies.csv'
 CREDIT_SOURCE = 'tmdb_5000_credits.csv'
 
 # CSVs to represent nodes.
-MOVIES = 'movie_nodes.csv'
-GENRES = 'genre_nodes.csv'
-KEYWORDS = 'keyword_nodes.csv'
-CAST = 'cast_nodes.csv'
-CREW = 'crew_nodes.csv'
+MOVIES = 'node-movies.csv'
+GENRES = 'node-genres.csv'
+KEYWORDS = 'node-keywords.csv'
+CAST = 'node-cast.csv'
+CREW = 'node-crew.csv'
 
 # CSVs to represent node relationships.
-GENRE_RELATIONS = 'genre_relations.csv'
-KEYWORD_RELATIONS = 'keyword_relations.csv'
-CAST_RELATIONS = 'cast_relations.csv'
-CREW_RELATIONS = 'crew_relations.csv'
+GENRE_RELATIONS = 'relations-genre.csv'
+KEYWORD_RELATIONS = 'relations-keyword.csv'
+CAST_RELATIONS = 'relations-cast.csv'
+CREW_RELATIONS = 'relations-crew.csv'
 
 # For simplicity, we were able to contain all node creation and relationships within one python file.
 processed_movies = open(MOVIES, 'w+')
