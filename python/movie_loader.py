@@ -16,6 +16,8 @@ CREW = 'crew.csv'
 
 GENRE_RELATIONS = 'genre_relations.csv'
 KEYWORD_RELATIONS = 'keyword_relations.csv'
+CAST_RELATIONS = 'cast_relations.csv'
+CREW_RELATIONS = 'crew_relations.csv'
 # Writes into destination
 processed_movies = open(MOVIES, 'w+')
 processed_genres = open(GENRES, 'w+')
@@ -24,8 +26,8 @@ processed_cast = open(CAST, 'w+')
 processed_crew = open (CREW, "w+")
 processed_genre_relations = open(GENRE_RELATIONS, 'w+')
 processed_keyword_relations = open(KEYWORD_RELATIONS, 'w+')
-processed_cast_relations = open(GENRE_RELATIONS, 'w+')
-processed_crew_relations = open(GENRE_RELATIONS, 'w+')
+processed_cast_relations = open(CAST_RELATIONS, 'w+')
+processed_crew_relations = open(CREW_RELATIONS, 'w+')
 # to connect to database
 # db_user = os.environ['DB_USER'] if os.environ.get('DB_USER') else 'neo4j'
 
