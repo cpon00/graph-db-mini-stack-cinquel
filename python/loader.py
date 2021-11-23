@@ -1,24 +1,25 @@
 from datetime import date
 import csv
 import json
-import os
-import sys
 
 # For simplicity, we assume that the program runs where the files are located.
 MOVIE_SOURCE = 'tmdb_5000_movies.csv'
 CREDIT_SOURCE = 'tmdb_5000_credits.csv'
 
+# CSVs to represent nodes.
 MOVIES = 'movies.csv'
 GENRES = 'genres.csv'
 KEYWORDS = 'keywords.csv'
 CAST = 'cast.csv'
 CREW = 'crew.csv'
 
+# CSVs to represent node relationships.
 GENRE_RELATIONS = 'genre_relations.csv'
 KEYWORD_RELATIONS = 'keyword_relations.csv'
 CAST_RELATIONS = 'cast_relations.csv'
 CREW_RELATIONS = 'crew_relations.csv'
-# Writes into destination
+
+# For simplicity, we were able to contain all node creation and relationships within one python file.
 processed_movies = open(MOVIES, 'w+')
 processed_genres = open(GENRES, 'w+')
 processed_keywords = open(KEYWORDS, 'w+')
@@ -28,39 +29,14 @@ processed_genre_relations = open(GENRE_RELATIONS, 'w+')
 processed_keyword_relations = open(KEYWORD_RELATIONS, 'w+')
 processed_cast_relations = open(CAST_RELATIONS, 'w+')
 processed_crew_relations = open(CREW_RELATIONS, 'w+')
-# to connect to database
-# db_user = os.environ['DB_USER'] if os.environ.get('DB_USER') else 'neo4j'
 
-
-# # The Neo4j documentation calls this object `driver` but the name `db` is used here
-# # to provide an analogy across various DAL examples.
-# db = GraphDatabase.driver(os.environ['DB_URL'], auth=(db_user, os.environ['DB_PASSWORD']))
-
-# We have two files to load, but only some of the files in the credits are relevant.
-# So we open both and use only the cast and crew portion of credits.
-
-# genre_dict = {}
-# for genres in movies.genres:
-#     for item in genres:
-#         genre_id = item['id']
-#         genre_name = item['name']
-#         genre_dict[genre_id] = genre_name
-        
-# kw_dict = {}
-# for (id, keywords) in zip(movies.id, movies.keywords):
-#     for kw in keywords:
-#         kw_id = kw['id']
-#         kw_name = kw['name']
-#         kw_dict[kw_id] = kw_name
-
-# for (key, value) in kw_dict.items():
-#     value = value.replace("'", "''")
-#     print(f'INSERT INTO keyword VALUES({key}, \'{value}\');'
-#           )
+# These data structures will represent the non-unique genres and keywords. As such, they are contained in a set.
 genres = set()
 keywords = set()
-cast = set()
-crew = set()
+
+# To avoid the issue of commas, we simply specified the delimiter '|' in the import command.
+
+# For further simplicity, we populated the headers of the node files and their relationships before writing the data to the files.
 processed_movies.write(f'movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT\n')
 
 processed_genres.write(f'genreID:ID(Genre)\n')
@@ -75,7 +51,7 @@ processed_cast_relations.write(f':START_ID(Movie)|:END_ID(Actor)|:TYPE\n')
 processed_crew.write(f'crewID:ID(Crew)|job:STRING\n')
 processed_crew_relations.write(f':START_ID(Movie)|:END_ID(Crew)|:TYPE\n')
 
-
+# Opening and reading files:
 with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', encoding='UTF-8') as c:
     movie_list, credit_list = list(csv.DictReader(m)), list(csv.DictReader(c))
     for movie, credit in zip(movie_list, credit_list):
@@ -89,42 +65,34 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
             result['release_date'] = date.fromisoformat(movie['release_date'])
         result['original_language'] = movie['original_language']
         result['budget'] = int(movie['budget'])
-
-        for entry in json.loads(movie['genres']): 
-            genres.add(entry['name'])
-            processed_genre_relations.write(f"{result['id']}|{entry['name']}|CLASSIFIED_AS\n")
-        for entry in json.loads(movie['keywords']): 
-            keywords.add(entry['name'])
-            processed_keyword_relations.write(f"{result['id']}|{entry['name']}|HAS_KEYWORD\n")
-        # result['genre'] = json.loads(movie['genres'])
-        # result['keywords'] = json.loads(movie['keywords'])
-        # result['overview'] = movie['overview']
-
         result['popularity'] = float(movie['popularity'])
         result['vote_average'] = float(movie['vote_average'])
-
         # Likewise as above.
         if movie['runtime'] == '':
             result['runtime'] = 0
         else:
             result['runtime'] = int(float(movie['runtime']))
 
+        # The genres, keywords, cast, and crew data is all in the form of a json snippet. As such, I processed the data into a dictionary, then added those entities and their relationships.
+        for entry in json.loads(movie['genres']): 
+            genres.add(entry['name'])
+            processed_genre_relations.write(f"{result['id']}|{entry['name']}|CLASSIFIED_AS\n")
+        for entry in json.loads(movie['keywords']): 
+            keywords.add(entry['name'])
+            processed_keyword_relations.write(f"{result['id']}|{entry['name']}|HAS_KEYWORD\n")
         for entry in json.loads(credit['cast']):
-            processed_cast.write(f"{entry['name']}|{entry['character']}\n")
+            character = entry['character'].replace('"', '\"')
+            processed_cast.write(f"{entry['name']}|{character}\n")
             processed_cast_relations.write(f"{result['id']}|{entry['name']}|PERFORMED IN\n")
-            
         for entry in json.loads(credit['crew']):
             processed_crew.write(f"{entry['name']}|{entry['job']}\n")
             processed_crew_relations.write(f"{result['id']}|{entry['name']}|WORKED ON\n")
         
-        # POPULATION STATEMENTS
+        # Final write statement for movies.
         processed_movies.write(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
                                   f"{result['budget']}|{result['popularity']}|{result['vote_average']}|{result['runtime']}\n")
-        
-        # DEBUGGING STATEMENTS
-        # print(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
-        #                           f"{result['budget']}|{result['popularity']}|{result['vote_average']}|{result['runtime']}\n")
 
+# Populating genres and keywords. As iterated above, they are non-distinct.
 for key in genres:
     processed_genres.write(f"{key}\n")
 
@@ -137,5 +105,3 @@ processed_genres.close()
 processed_crew.close()
 processed_cast.close()
 
-# Print statement for ID of inserted entry.
-# print(x.inserted_id)
