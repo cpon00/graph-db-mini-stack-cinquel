@@ -84,10 +84,12 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
             character = entry['character'].replace('"', "'")
             name = entry['name'].replace('"', "'")
             processed_cast.write(f"{name}|{character}\n")
-            processed_cast_relations.write(f"{result['id']}|{entry['name']}|PERFORMED IN\n")
+            processed_cast_relations.write(f"{result['id']}|{name}|PERFORMED IN\n")
         for entry in json.loads(credit['crew']):
-            processed_crew.write(f"{entry['name']}|{entry['job']}\n")
-            processed_crew_relations.write(f"{result['id']}|{entry['name']}|WORKED ON\n")
+            job = entry['job'].replace('"', "'")
+            name = entry['name'].replace('"', "'")
+            processed_crew.write(f"{name}|{job}\n")
+            processed_crew_relations.write(f"{result['id']}|{name}|WORKED ON\n")
         
         # Final write statement for movies.
         processed_movies.write(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
