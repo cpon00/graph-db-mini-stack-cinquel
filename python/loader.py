@@ -7,17 +7,18 @@ MOVIE_SOURCE = 'tmdb_5000_movies.csv'
 CREDIT_SOURCE = 'tmdb_5000_credits.csv'
 
 # CSVs to represent nodes.
-MOVIES = 'node-movies.csv'
-GENRES = 'node-genres.csv'
-KEYWORDS = 'node-keywords.csv'
-CAST = 'node-cast.csv'
-CREW = 'node-crew.csv'
+MOVIES = 'movies.csv'
+GENRES = 'genres.csv'
+KEYWORDS = 'keywords.csv'
+CAST = 'cast.csv'
+CREW = 'crew.csv'
+
 
 # CSVs to represent node relationships.
-GENRE_RELATIONS = 'relations-genre.csv'
-KEYWORD_RELATIONS = 'relations-keyword.csv'
-CAST_RELATIONS = 'relations-cast.csv'
-CREW_RELATIONS = 'relations-crew.csv'
+GENRE_RELATIONS = 'genre_relations.csv'
+KEYWORD_RELATIONS = 'keyword_relations.csv'
+CAST_RELATIONS = 'cast_relations.csv'
+CREW_RELATIONS = 'crew_relations.csv'
 
 # For simplicity, we were able to contain all node creation and relationships within one python file.
 processed_movies = open(MOVIES, 'w+')
@@ -45,10 +46,10 @@ processed_genre_relations.write(f':START_ID(Movie)|:END_ID(Genre)|:TYPE\n')
 processed_keywords.write(f'keywordID:ID(Keyword)\n')
 processed_keyword_relations.write(f':START_ID(Movie)|:END_ID(Keyword)|:TYPE\n')
 
-processed_cast.write(f'castID:ID|role:STRING\n')
+processed_cast.write(f'castID:ID(Actor)|role:STRING\n')
 processed_cast_relations.write(f':START_ID(Movie)|:END_ID|:TYPE\n')
 
-processed_crew.write(f'crewID:ID|job:STRING\n')
+processed_crew.write(f'crewID:ID(Crew)|job:STRING\n')
 processed_crew_relations.write(f':START_ID(Movie)|:END_ID|:TYPE\n')
 
 # Opening and reading files:
@@ -77,17 +78,24 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
         for entry in json.loads(movie['genres']): 
             genres.add(entry['name'])
             processed_genre_relations.write(f"{result['id']}|{entry['name']}|CLASSIFIED_AS\n")
+            
         for entry in json.loads(movie['keywords']): 
             keywords.add(entry['name'])
             processed_keyword_relations.write(f"{result['id']}|{entry['name']}|HAS_KEYWORD\n")
-        for entry in json.loads(credit['cast']):
-            character = entry['character'].replace('"', "'").replace('|', '/')
-            name = entry['name'].replace('"', "'").replace('|', '/')
+        
+        cast = json.loads(credit['cast'])    
+        end = 2 if len(cast) >= 3 else len(cast)
+        for x in range(0, end):
+            character = cast[x]['character'].replace('"', "'").replace('|', '/')
+            name = cast[x]['name'].replace('"', "'").replace('|', '/')
             processed_cast.write(f"{name}|{character}\n")
             processed_cast_relations.write(f"{result['id']}|{name}|PERFORMED IN\n")
-        for entry in json.loads(credit['crew']):
-            job = entry['job'].replace('"', "'").replace('|', '/')
-            name = entry['name'].replace('"', "'").replace('|', '/')
+            
+        crew = json.loads(credit['crew'])
+        end = 2 if len(crew) >= 3 else len(crew)    
+        for x in range(0, end):
+            job = crew[x]['job'].replace('"', "'").replace('|', '/')
+            name = crew[x]['name'].replace('"', "'").replace('|', '/')
             processed_crew.write(f"{name}|{job}\n")
             processed_crew_relations.write(f"{result['id']}|{name}|WORKED ON\n")
         
