@@ -11,7 +11,7 @@ Submit these in a Markdown file called queries.md. All queries should be domain-
 ```json
 MATCH (m:Movie)
 WHERE toLower(m.title) CONTAINS 'dog' AND m.popularity > 25
-MATCH (m) - [r:CLASSIFIES_AS] -> (g:Genre)
+MATCH (m) - [r:CLASSIFIED_AS] -> (g:Genre)
 RETURN m,r,g
 ```
 
@@ -36,18 +36,22 @@ ORDER BY m.popularity DESC
 ### A query that matches a meaningful subgraph then optionally matches more relationships/nodes (i.e., the query returns all nodes in the first subgraph even if they don’t match the second pattern)
 
 ```
-
+MATCH (m:Movie)
+WHERE toLower(m.title) CONTAINS "star"
+OPTIONAL MATCH (m)-[r:CLASSIFIED_AS]->(g:Genre {genreID : 'Action'})
+RETURN m,r,g
 ```
 
 <center><img src="./assets/p3.png" style="width: 90%" ></img></center>
+<center><img src="./assets/p32.png" style="width: 90%" ></img></center>
 
->
+> Returns a graph of all movies with 'star' in the title, and optionally graphs the movies with the genre 'Action'. The graph contains the movie titles and the Action node. Also I included a picture of the table to show the null relationships.
 
 ### An overall aggregate query that provides counts or other aggregate computations for an overall set of pattern-matched nodes or edges (this one will not return a graph)
 
 ```
 MATCH (m:Movie)
-WHERE m.original_language = 'en'
+WHERE m.original_language <> 'en'
 RETURN COUNT(*)
 ```
 
@@ -58,29 +62,36 @@ RETURN COUNT(*)
 ### A grouped aggregate query that provides counts or other aggregate computations for groupings derived from pattern-matched nodes or edges (this one will not return a graph)
 
 ```
-
+MATCH (m:Movie) - [r:CLASSIFIED_AS] -> (g:Genre {genreID:"Drama"})
+WHERE m.popularity < 100
+RETURN m.original_language, count(m)
+ORDER BY count(m) DESC,m.original_language
+LIMIT 10
 ```
 
 <center><img src="./assets/p5.png" style="width: 90%" ></img></center>
 
->
+> An aggregate count of all movies by original language that are in the genre "Drama" and have a popularity of under 100. We then order the aggregation by the count (descending), and in the case of a tie, by the language code, limited to the top 10.
 
 ### Another Query from 1-3
 
 ```
-
+MATCH (m:Movie) - [r:HAS_KEYWORD] -> (k:Keywords)
+WHERE k.keywordID = 'british secret service'
+RETURN m,k,r
+ORDER BY  m.release_date DESC
 ```
 
 <center><img src="./assets/p6.png" style="width: 90%" ></img></center>
 
->
+> Returns a graph of all movies who share the keyword "british secret service" and in turn show all the James Bond films in our dataset. We order them by descending release date which can be seen in the table view
 
 ### Another Query from 4-5
 
 ```
 MATCH (c:Cast) - [r:`PERFORMED IN`] -> (m:Movie)
 WHERE c.castID = "Will Arnett"
-RETURN count(m.title), avg(m.runtime)
+RETURN avg(m.runtime), count(m.title)
 ```
 
 <center><img src="./assets/p7.png" style="width: 90%" ></img></center>
