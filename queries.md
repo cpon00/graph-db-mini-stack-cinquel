@@ -97,3 +97,15 @@ RETURN avg(m.runtime), count(m.title)
 <center><img src="./assets/p7.png" style="width: 90%" ></img></center>
 
 > Returns the count of movies and the average runtime of the moves where Will Arnett was a cast member
+
+### Another one for fun to show the properties of our relationships
+
+```
+MATCH (c:Cast) - [r:`PERFORMED IN`] -> (m:Movie)
+WHERE r.role = "James Bond"
+RETURN c,r,m
+```
+
+<center><img src="./assets/p8.png" style="width: 90%" ></img></center>
+
+> Shows off all the different actors who portrayed James Bond over the years.
