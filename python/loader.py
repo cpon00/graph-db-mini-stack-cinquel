@@ -49,10 +49,10 @@ processed_keywords.write(f'keywordID:ID(Keyword)\n')
 processed_keyword_relations.write(f':START_ID(Movie)|:END_ID(Keyword)|:TYPE\n')
 
 processed_cast.write(f'castID:ID(Cast)\n')
-processed_cast_relations.write(f':START_ID(Cast)|:END_ID(Movie)|:TYPE\n')
+processed_cast_relations.write(f':START_ID(Cast)|:END_ID(Movie)|role:STRING|:TYPE\n')
 
 processed_crew.write(f'crewID:ID(Crew)\n')
-processed_crew_relations.write(f':START_ID(Crew)|:END_ID(Movie)|:TYPE\n')
+processed_crew_relations.write(f':START_ID(Crew)|:END_ID(Movie)|job:STRING|:TYPE\n')
 
 # Opening and reading files:
 with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', encoding='UTF-8') as c:
@@ -87,14 +87,16 @@ with open(MOVIE_SOURCE, 'r+', encoding='UTF-8') as m, open(CREDIT_SOURCE, 'r+', 
         
         for entry in json.loads(credit['cast']):
             name = entry['name'].replace('"', "'").replace('|', '/')
+            character = entry['character'].replace('"', "'").replace('|', '/')
             cast.add(name)
-            processed_cast_relations.write(f"{name}|{result['id']}|PERFORMED IN\n")
+            processed_cast_relations.write(f"{name}|{result['id']}|{character}|PERFORMED IN\n")
             
             
         for entry in json.loads(credit['crew']):
             name = entry['name'].replace('"', "'").replace('|', '/')
+            job = entry['job'].replace('"', "'").replace('|', '/')
             crew.add(name)
-            processed_crew_relations.write(f"{name}|{result['id']}|WORKED ON\n")
+            processed_crew_relations.write(f"{name}|{result['id']}|{job}|WORKED ON\n")
         
         # Final write statement for movies.
         processed_movies.write(f"{result['id']}|{result['title']}|{result['release_date']}|{result['original_language']}|" \
