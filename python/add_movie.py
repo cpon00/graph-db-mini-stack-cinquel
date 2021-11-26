@@ -2,51 +2,27 @@ import sys
 
 
 from tmdb_dal import insert_movie
-from tmdb_dal import insert_title
 
-# if len(sys.argv) != 9:
-#     print('Usage: add_movie <title> <date> <language> <budget> <popularity> <vote-average> <runtime> <id>')
-#     exit(1)
-
-
-title = sys.argv[1]
-print(title)
-
-#"1000-01-01"
-# date = sys.argv[2]
-# print(date)
-
-# lang = sys.argv[3]
-# print(lang)
-
-# budget = sys.argv[4]
-# print(budget)
-
-# popularity = sys.argv[5]
-# print(popularity)
-
-# vote_av = sys.argv[6]
-# print(vote_av)
-
-# runtime = sys.argv[7]
-# print(runtime)
-
-# movie_id = sys.argv[8]
-# print(movie_id)
+if len(sys.argv) != 9:
+    print('Usage: add_movie <budget> <movieId> <orgininal_language> <popularity> <release_date> <runtime> <title> <vote_average>')
+    exit(1)
 
 
+budget = sys.argv[1]
+movieId = sys.argv[2]
+original_language = sys.argv[3]
+popularity = sys.argv[4]
+release_date = sys.argv[5]
+runtime = sys.argv[6]
+title = sys.argv[7]
+vote_average = sys.argv[8]
 
-
-# "Josh", "2000-09-17", "en", 10000, 10, 100, 1000
 
 try:
-    movie = insert_title(title)
-    # movie = insert_movie(title, date, lang, int(budget), float(popularity), float(vote_av), int(runtime), int(movie_id))
+    movie = insert_movie(int(budget), int(movieId), original_language, float(
+        popularity), release_date, int(runtime), title, float(vote_average))
     print(
-        f"Movie “{movie.get('title')}” added with")
+        f"Movie “{movie.get('title')}” added with id {movieId} ")
 except ValueError:
     print(
         f'Sorry, something went wrong.')
-
-
-# movieId:id(Movie)|title:STRING|release_date:DATE|original_language:STRING|budget:INT|popularity:FLOAT|vote_average:FLOAT|runtime:INT
